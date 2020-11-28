@@ -49,7 +49,10 @@ int main() {
 //    tests.push_back(union_UnionIntersectingOn1Axis_ICompactPtr);
     tests.push_back(union_UnionIntersectingOnSeveralAxes_ICompactPtr);
     tests.push_back(union_UnionIncluding_ICompactPtr);
-//    tests.push_back();
+    tests.push_back(convex_NullPtr_NullPtr);
+    tests.push_back(convex_WrongDim_NullPtr);
+    tests.push_back(intersection_NullPtr_NullPtr);
+    tests.push_back(intersection_WrongDim_NullPtr);
 
     int testCounter = 0;
     int passedTestConter = 0;
