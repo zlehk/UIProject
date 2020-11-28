@@ -56,6 +56,19 @@ int main() {
     tests.push_back(union_NegativeTolerance_NullPtr);
     tests.push_back(union_UnionIntersecting_ISetPtr);
     tests.push_back(union_UnionNotIntersecting_ISetPtr);
+    tests.push_back(difference_NullPtr_NullPtr);
+    tests.push_back(difference_WrongDim_NullPtr);
+    tests.push_back(difference_NaNTolerance_NullPtr);
+    tests.push_back(difference_NegativeTolerance_NullPtr);
+    tests.push_back(difference_DiffIntersecting_ISetPtr);
+    tests.push_back(difference_DiffNotIntersecting_ISetPtr);
+    tests.push_back(difference_DiffEqual_ISetPtr);
+    tests.push_back(symmDifference_SymmDiffIntersecting_ISetPtr);
+    tests.push_back(symmDifference_SymmDiffNotIntersecting_ISetPtr);
+    tests.push_back(symmDifference_SymmDiffEqual_ISetPtr);
+    tests.push_back(intersection_DiffIntersecting_ISetPtr);
+    tests.push_back(intersection_DiffNotIntersecting_ISetPtr);
+    tests.push_back(intersection_DiffEqual_ISetPtr);
 
     int testCounter = 0;
     int passedTestConter = 0;

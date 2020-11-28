@@ -1006,35 +1006,293 @@ bool union_UnionNotIntersecting_ISetPtr(ILogger *logger, char *&testName) {
     return passed;
 }
 
-//
-//bool difference_NullPtr_NullPtr(ILogger *logger, char *&testName) {
-//
-//}
-//
-//bool difference_WrongDim_NullPtr(ILogger *logger, char *&testName) {
-//
-//}
-//
-//bool difference_NaNTolerance_NullPtr(ILogger *logger, char *&testName) {
-//
-//}
-//
-//bool difference_NegativeTolerance_NullPtr(ILogger *logger, char *&testName) {
-//
-//}
-//
-//bool difference_DiffIntersecting_ISetPtr(ILogger *logger, char *&testName) {
-//
-//}
-//
-//bool difference_DiffNotIntersecting_ISetPtr(ILogger *logger, char *&testName) {
-//
-//}
-//
-//bool difference_DiffEqual_ISetPtr(ILogger *logger, char *&testName) {
-//
-//}
-//
+bool difference_NullPtr_NullPtr(ILogger *logger, char *&testName) {
+    ISet *diffSet = ISet::difference(nullptr, nullptr, IVector::Norm::NORM_1, EPS, logger);
+
+    bool passed = (diffSet == nullptr);
+    if (!passed) delete diffSet;
+
+    testName = const_cast<char *>(__FUNCTION__);
+    return passed;
+}
+
+bool difference_WrongDim_NullPtr(ILogger *logger, char *&testName) {
+    ISet *set1 = ISet::createSet(logger);
+    assert(set1 != nullptr);
+
+    double *data1 = new(std::nothrow) double[g_dim1];
+    assert(data1 != nullptr);
+    std::memcpy(data1, g_data1Left, g_dim1 * sizeof(double));
+    IVector *vec1 = IVector::createVector(g_dim1, data1, logger);
+    assert(vec1 != nullptr);
+
+    ReturnCode rc;
+    rc = set1->insert(vec1, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    ISet *set2 = ISet::createSet(logger);
+    assert(set2 != nullptr);
+
+    double *data2 = new(std::nothrow) double[g_dim2];
+    assert(data2 != nullptr);
+    std::memcpy(data2, g_data21, g_dim2 * sizeof(double));
+    IVector *vec2 = IVector::createVector(g_dim2, data2, logger);
+    assert(vec2 != nullptr);
+
+    rc = set2->insert(vec2, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    delete vec1;
+    delete vec2;
+
+    ISet *diffSet = ISet::difference(set1, set2, IVector::Norm::NORM_1, EPS, logger);
+
+    delete set1;
+    delete set2;
+
+    bool passed = (diffSet == nullptr);
+    if (!passed) delete diffSet;
+
+    testName = const_cast<char *>(__FUNCTION__);
+    return passed;
+}
+
+bool difference_NaNTolerance_NullPtr(ILogger *logger, char *&testName) {
+    ISet *set1 = ISet::createSet(logger);
+    assert(set1 != nullptr);
+
+    double *data1 = new(std::nothrow) double[g_dim1];
+    assert(data1 != nullptr);
+    std::memcpy(data1, g_data1Left, g_dim1 * sizeof(double));
+    IVector *vec1 = IVector::createVector(g_dim1, data1, logger);
+    assert(vec1 != nullptr);
+
+    ReturnCode rc;
+    rc = set1->insert(vec1, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    ISet *set2 = ISet::createSet(logger);
+    assert(set2 != nullptr);
+
+    double *data2 = new(std::nothrow) double[g_dim1];
+    assert(data2 != nullptr);
+    std::memcpy(data2, g_data1Right, g_dim1 * sizeof(double));
+    IVector *vec2 = IVector::createVector(g_dim1, data2, logger);
+    assert(vec2 != nullptr);
+
+    rc = set2->insert(vec2, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    delete vec1;
+    delete vec2;
+
+    ISet *diffSet = ISet::_union(set1, set2, IVector::Norm::NORM_1, NAN, logger);
+
+    delete set1;
+    delete set2;
+
+    bool passed = (diffSet == nullptr);
+    if (!passed) delete diffSet;
+
+    testName = const_cast<char *>(__FUNCTION__);
+    return passed;
+}
+
+bool difference_NegativeTolerance_NullPtr(ILogger *logger, char *&testName) {
+    ISet *set1 = ISet::createSet(logger);
+    assert(set1 != nullptr);
+
+    double *data1 = new(std::nothrow) double[g_dim1];
+    assert(data1 != nullptr);
+    std::memcpy(data1, g_data1Left, g_dim1 * sizeof(double));
+    IVector *vec1 = IVector::createVector(g_dim1, data1, logger);
+    assert(vec1 != nullptr);
+
+    ReturnCode rc;
+    rc = set1->insert(vec1, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    ISet *set2 = ISet::createSet(logger);
+    assert(set2 != nullptr);
+
+    double *data2 = new(std::nothrow) double[g_dim1];
+    assert(data2 != nullptr);
+    std::memcpy(data2, g_data1Right, g_dim1 * sizeof(double));
+    IVector *vec2 = IVector::createVector(g_dim1, data2, logger);
+    assert(vec2 != nullptr);
+
+    rc = set2->insert(vec2, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    delete vec1;
+    delete vec2;
+
+    ISet *diffSet = ISet::_union(set1, set2, IVector::Norm::NORM_1, -EPS, logger);
+
+    delete set1;
+    delete set2;
+
+    bool passed = (diffSet == nullptr);
+    if (!passed) delete diffSet;
+
+    testName = const_cast<char *>(__FUNCTION__);
+    return passed;
+}
+
+bool difference_DiffIntersecting_ISetPtr(ILogger *logger, char *&testName) {
+    ISet *set1 = ISet::createSet(logger);
+    assert(set1 != nullptr);
+
+    double *data1 = new(std::nothrow) double[g_dim1];
+    assert(data1 != nullptr);
+    std::memcpy(data1, g_data1Left, g_dim1 * sizeof(double));
+    IVector *vec1 = IVector::createVector(g_dim1, data1, logger);
+    assert(vec1 != nullptr);
+
+    ReturnCode rc;
+    rc = set1->insert(vec1, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    ISet *set2 = ISet::createSet(logger);
+    assert(set2 != nullptr);
+
+    double *data2 = new(std::nothrow) double[g_dim1];
+    assert(data2 != nullptr);
+    std::memcpy(data2, g_data1Right, g_dim1 * sizeof(double));
+    IVector *vec2 = IVector::createVector(g_dim1, data2, logger);
+    assert(vec2 != nullptr);
+
+    rc = set2->insert(vec2, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    double *intsctData = new(std::nothrow) double[g_dim1];
+    assert(intsctData != nullptr);
+    std::memcpy(intsctData, g_data1FarLeft, g_dim1 * sizeof(double));
+    IVector *intsctVec = IVector::createVector(g_dim1, intsctData, logger);
+    assert(intsctVec != nullptr);
+
+    rc = set1->insert(intsctVec, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    rc = set2->insert(intsctVec, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    delete vec2;
+    delete intsctVec;
+
+    ISet *diffSet = ISet::difference(set1, set2, IVector::Norm::NORM_1, EPS, logger);
+    assert(diffSet != nullptr);
+
+    delete set1;
+    delete set2;
+
+    IVector *vec1After = nullptr;
+    rc = diffSet->get(vec1After, 0);
+    assert(vec1After != nullptr);
+    bool isEqual;
+    rc = IVector::equals(vec1, vec1After, IVector::Norm::NORM_1, EPS, isEqual, logger);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    bool passed = (diffSet != nullptr && diffSet->getSize() == 1 && isEqual);
+    delete diffSet;
+    delete vec1;
+    delete vec1After;
+
+    testName = const_cast<char *>(__FUNCTION__);
+    return passed;
+}
+
+bool difference_DiffNotIntersecting_ISetPtr(ILogger *logger, char *&testName) {
+    ISet *set1 = ISet::createSet(logger);
+    assert(set1 != nullptr);
+
+    double *data1 = new(std::nothrow) double[g_dim1];
+    assert(data1 != nullptr);
+    std::memcpy(data1, g_data1Left, g_dim1 * sizeof(double));
+    IVector *vec1 = IVector::createVector(g_dim1, data1, logger);
+    assert(vec1 != nullptr);
+
+    ReturnCode rc;
+    rc = set1->insert(vec1, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    ISet *set2 = ISet::createSet(logger);
+    assert(set2 != nullptr);
+
+    double *data2 = new(std::nothrow) double[g_dim1];
+    assert(data2 != nullptr);
+    std::memcpy(data2, g_data1Right, g_dim1 * sizeof(double));
+    IVector *vec2 = IVector::createVector(g_dim1, data2, logger);
+    assert(vec2 != nullptr);
+
+    rc = set2->insert(vec2, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    delete vec2;
+
+    ISet *diffSet = ISet::difference(set1, set2, IVector::Norm::NORM_1, EPS, logger);
+    assert(diffSet != nullptr);
+
+    delete set1;
+    delete set2;
+
+    IVector *vec1After = nullptr;
+    rc = diffSet->get(vec1After, 0);
+    bool isEqual;
+    rc = IVector::equals(vec1, vec1After, IVector::Norm::NORM_1, EPS, isEqual, logger);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    bool passed = (diffSet != nullptr && diffSet->getSize() == 1 && isEqual);
+    delete diffSet;
+    delete vec1;
+    delete vec1After;
+
+    testName = const_cast<char *>(__FUNCTION__);
+    return passed;
+}
+
+bool difference_DiffEqual_ISetPtr(ILogger *logger, char *&testName) {
+    ISet *set1 = ISet::createSet(logger);
+    assert(set1 != nullptr);
+
+    double *data1 = new(std::nothrow) double[g_dim1];
+    assert(data1 != nullptr);
+    std::memcpy(data1, g_data1Left, g_dim1 * sizeof(double));
+    IVector *vec1 = IVector::createVector(g_dim1, data1, logger);
+    assert(vec1 != nullptr);
+
+    ReturnCode rc;
+    rc = set1->insert(vec1, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    ISet *set2 = ISet::createSet(logger);
+    assert(set2 != nullptr);
+
+    double *data2 = new(std::nothrow) double[g_dim1];
+    assert(data2 != nullptr);
+    std::memcpy(data2, g_data1Left, g_dim1 * sizeof(double));
+    IVector *vec2 = IVector::createVector(g_dim1, data2, logger);
+    assert(vec2 != nullptr);
+
+    rc = set2->insert(vec2, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    delete vec1;
+    delete vec2;
+
+    ISet *diffSet = ISet::difference(set1, set2, IVector::Norm::NORM_1, EPS, logger);
+    assert(diffSet != nullptr);
+
+    delete set1;
+    delete set2;
+
+    bool passed = (diffSet != nullptr && diffSet->getSize() == 0);
+    delete diffSet;
+
+    testName = const_cast<char *>(__FUNCTION__);
+    return passed;
+}
+
 //bool symmDifference_NullPtr_NullPtr(ILogger *logger, char *&testName) {
 //
 //}
@@ -1051,18 +1309,138 @@ bool union_UnionNotIntersecting_ISetPtr(ILogger *logger, char *&testName) {
 //
 //}
 //
-//bool symmDifference_SymmDiffIntersecting_ISetPtr(ILogger *logger, char *&testName) {
-//
-//}
-//
-//bool symmDifference_SymmDiffNotIntersecting_ISetPtr(ILogger *logger, char *&testName) {
-//
-//}
-//
-//bool symmDifference_SymmDiffEqual_ISetPtr(ILogger *logger, char *&testName) {
-//
-//}
-//
+bool symmDifference_SymmDiffIntersecting_ISetPtr(ILogger *logger, char *&testName) {
+    ISet *set1 = ISet::createSet(logger);
+    assert(set1 != nullptr);
+
+    double *data1 = new(std::nothrow) double[g_dim1];
+    assert(data1 != nullptr);
+    std::memcpy(data1, g_data1Left, g_dim1 * sizeof(double));
+    IVector *vec1 = IVector::createVector(g_dim1, data1, logger);
+    assert(vec1 != nullptr);
+
+    ReturnCode rc;
+    rc = set1->insert(vec1, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    ISet *set2 = ISet::createSet(logger);
+    assert(set2 != nullptr);
+
+    double *data2 = new(std::nothrow) double[g_dim1];
+    assert(data2 != nullptr);
+    std::memcpy(data2, g_data1Right, g_dim1 * sizeof(double));
+    IVector *vec2 = IVector::createVector(g_dim1, data2, logger);
+    assert(vec2 != nullptr);
+
+    rc = set2->insert(vec2, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    double *intsctData = new(std::nothrow) double[g_dim1];
+    assert(intsctData != nullptr);
+    std::memcpy(intsctData, g_data1FarLeft, g_dim1 * sizeof(double));
+    IVector *intsctVec = IVector::createVector(g_dim1, intsctData, logger);
+    assert(intsctVec != nullptr);
+
+    rc = set1->insert(intsctVec, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    rc = set2->insert(intsctVec, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    delete vec1;
+    delete vec2;
+    delete intsctVec;
+
+    ISet *symmDiffSet = ISet::symmetricDifference(set1, set2, IVector::Norm::NORM_1, EPS, logger);
+    assert(symmDiffSet != nullptr);
+
+    delete set1;
+    delete set2;
+
+    bool passed = (symmDiffSet != nullptr && symmDiffSet->getSize() == 2);
+    delete symmDiffSet;
+
+    testName = const_cast<char *>(__FUNCTION__);
+    return passed;
+}
+
+bool symmDifference_SymmDiffNotIntersecting_ISetPtr(ILogger *logger, char *&testName) {
+    ISet *set1 = ISet::createSet(logger);
+    assert(set1 != nullptr);
+
+    double *data1 = new(std::nothrow) double[g_dim1];
+    assert(data1 != nullptr);
+    std::memcpy(data1, g_data1Left, g_dim1 * sizeof(double));
+    IVector *vec1 = IVector::createVector(g_dim1, data1, logger);
+    assert(vec1 != nullptr);
+
+    ReturnCode rc;
+    rc = set1->insert(vec1, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    ISet *set2 = ISet::createSet(logger);
+    assert(set2 != nullptr);
+
+    double *data2 = new(std::nothrow) double[g_dim1];
+    assert(data2 != nullptr);
+    std::memcpy(data2, g_data1Right, g_dim1 * sizeof(double));
+    IVector *vec2 = IVector::createVector(g_dim1, data2, logger);
+    assert(vec2 != nullptr);
+
+    rc = set2->insert(vec2, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    delete vec1;
+    delete vec2;
+
+    ISet *symmDiffSet = ISet::symmetricDifference(set1, set2, IVector::Norm::NORM_1, EPS, logger);
+    assert(symmDiffSet != nullptr);
+
+    delete set1;
+    delete set2;
+
+    bool passed = (symmDiffSet != nullptr && symmDiffSet->getSize() == 2);
+    delete symmDiffSet;
+
+    testName = const_cast<char *>(__FUNCTION__);
+    return passed;
+}
+
+bool symmDifference_SymmDiffEqual_ISetPtr(ILogger *logger, char *&testName) {
+    ISet *set1 = ISet::createSet(logger);
+    assert(set1 != nullptr);
+
+    double *data1 = new(std::nothrow) double[g_dim1];
+    assert(data1 != nullptr);
+    std::memcpy(data1, g_data1Left, g_dim1 * sizeof(double));
+    IVector *vec1 = IVector::createVector(g_dim1, data1, logger);
+    assert(vec1 != nullptr);
+
+    ReturnCode rc;
+    rc = set1->insert(vec1, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    ISet *set2 = ISet::createSet(logger);
+    assert(set2 != nullptr);
+
+    rc = set2->insert(vec1, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    delete vec1;
+
+    ISet *symmDiffSet = ISet::symmetricDifference(set1, set2, IVector::Norm::NORM_1, EPS, logger);
+    assert(symmDiffSet != nullptr);
+
+    delete set1;
+    delete set2;
+
+    bool passed = (symmDiffSet != nullptr && symmDiffSet->getSize() == 0 && symmDiffSet->getDim() == g_dim0);
+    delete symmDiffSet;
+
+    testName = const_cast<char *>(__FUNCTION__);
+    return passed;
+}
+
 //bool intersection_NullPtr_NullPtr(ILogger *logger, char *&testName) {
 //
 //}
@@ -1079,16 +1457,143 @@ bool union_UnionNotIntersecting_ISetPtr(ILogger *logger, char *&testName) {
 //
 //}
 //
-//bool intersection_DiffIntersecting_ISetPtr(ILogger *logger, char *&testName) {
-//
-//}
-//
-//bool intersection_DiffNotIntersecting_ISetPtr(ILogger *logger, char *&testName) {
-//
-//}
-//
-//bool intersection_DiffEqual_ISetPtr(ILogger *logger, char *&testName) {
-//
-//}
+bool intersection_DiffIntersecting_ISetPtr(ILogger *logger, char *&testName) {
+    ISet *set1 = ISet::createSet(logger);
+    assert(set1 != nullptr);
+
+    double *data1 = new(std::nothrow) double[g_dim1];
+    assert(data1 != nullptr);
+    std::memcpy(data1, g_data1Left, g_dim1 * sizeof(double));
+    IVector *vec1 = IVector::createVector(g_dim1, data1, logger);
+    assert(vec1 != nullptr);
+
+    ReturnCode rc;
+    rc = set1->insert(vec1, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    ISet *set2 = ISet::createSet(logger);
+    assert(set2 != nullptr);
+
+    double *data2 = new(std::nothrow) double[g_dim1];
+    assert(data2 != nullptr);
+    std::memcpy(data2, g_data1Right, g_dim1 * sizeof(double));
+    IVector *vec2 = IVector::createVector(g_dim1, data2, logger);
+    assert(vec2 != nullptr);
+
+    rc = set2->insert(vec2, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    double *intsctData = new(std::nothrow) double[g_dim1];
+    assert(intsctData != nullptr);
+    std::memcpy(intsctData, g_data1FarLeft, g_dim1 * sizeof(double));
+    IVector *intsctVec = IVector::createVector(g_dim1, intsctData, logger);
+    assert(intsctVec != nullptr);
+
+    rc = set1->insert(intsctVec, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    rc = set2->insert(intsctVec, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    delete vec1;
+    delete vec2;
+
+    ISet *intsctSet = ISet::intersection(set1, set2, IVector::Norm::NORM_1, EPS, logger);
+    assert(intsctSet != nullptr);
+
+    delete set1;
+    delete set2;
+
+    IVector *intsctVecAfter = nullptr;
+    rc = intsctSet->get(intsctVecAfter, 0);
+    assert(intsctVecAfter != nullptr);
+    bool isEqual;
+    rc = IVector::equals(vec1, intsctVecAfter, IVector::Norm::NORM_1, EPS, isEqual, logger);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    bool passed = (intsctSet != nullptr && intsctSet->getSize() == 1 && isEqual);
+    delete intsctSet;
+    delete intsctVecAfter;
+
+    testName = const_cast<char *>(__FUNCTION__);
+    return passed;
+}
+
+bool intersection_DiffNotIntersecting_ISetPtr(ILogger *logger, char *&testName) {
+    ISet *set1 = ISet::createSet(logger);
+    assert(set1 != nullptr);
+
+    double *data1 = new(std::nothrow) double[g_dim1];
+    assert(data1 != nullptr);
+    std::memcpy(data1, g_data1Left, g_dim1 * sizeof(double));
+    IVector *vec1 = IVector::createVector(g_dim1, data1, logger);
+    assert(vec1 != nullptr);
+
+    ReturnCode rc;
+    rc = set1->insert(vec1, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    ISet *set2 = ISet::createSet(logger);
+    assert(set2 != nullptr);
+
+    double *data2 = new(std::nothrow) double[g_dim1];
+    assert(data2 != nullptr);
+    std::memcpy(data2, g_data1Right, g_dim1 * sizeof(double));
+    IVector *vec2 = IVector::createVector(g_dim1, data2, logger);
+    assert(vec2 != nullptr);
+
+    rc = set2->insert(vec2, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    delete vec1;
+    delete vec2;
+
+    ISet *intsctSet = ISet::intersection(set1, set2, IVector::Norm::NORM_1, EPS, logger);
+    assert(intsctSet != nullptr);
+
+    delete set1;
+    delete set2;
+
+    bool passed = (intsctSet != nullptr && intsctSet->getSize() == 0 && intsctSet->getDim() == 0);
+    delete intsctSet;
+
+    testName = const_cast<char *>(__FUNCTION__);
+    return passed;
+}
+
+bool intersection_DiffEqual_ISetPtr(ILogger *logger, char *&testName) {
+    ISet *set1 = ISet::createSet(logger);
+    assert(set1 != nullptr);
+
+    double *data1 = new(std::nothrow) double[g_dim1];
+    assert(data1 != nullptr);
+    std::memcpy(data1, g_data1Left, g_dim1 * sizeof(double));
+    IVector *vec1 = IVector::createVector(g_dim1, data1, logger);
+    assert(vec1 != nullptr);
+
+    ReturnCode rc;
+    rc = set1->insert(vec1, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    ISet *set2 = ISet::createSet(logger);
+    assert(set2 != nullptr);
+
+    rc = set2->insert(vec1, IVector::Norm::NORM_1, EPS);
+    assert(rc == ReturnCode::RC_SUCCESS);
+
+    delete vec1;
+
+    ISet *intsctSet = ISet::intersection(set1, set2, IVector::Norm::NORM_1, EPS, logger);
+    assert(intsctSet != nullptr);
+
+    delete set1;
+    delete set2;
+
+    bool passed = (intsctSet != nullptr && intsctSet->getSize() == 1);
+    delete intsctSet;
+
+    testName = const_cast<char *>(__FUNCTION__);
+    return passed;
+}
 
 #endif //TESTSET_H
