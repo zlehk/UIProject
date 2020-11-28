@@ -1,0 +1,3 @@
+add_subdirectory(TestVector)
+add_subdirectory(TestSet)
+add_subdirectory(TestCompact)
